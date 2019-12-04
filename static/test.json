@@ -1,0 +1,14 @@
+{"nodes": 
+[{"id": 11001746, "group": 2}, 
+{"id": 10000044, "group": 1}, 
+{"id": 10000055, "group": 1}, 
+{"id": 10000064, "group": 1}, 
+{"id": 10000089, "group": 1}, 
+{"id": 10000091, "group": 1}],
+"links": 
+[{"source": 11001746, "target": 10000044, "value": 1},
+{"source": 11001746, "target": 10000055, "value": 1},
+{"source": 11001746, "target": 10000064, "value": 1},
+{"source": 11001746, "target": 10000089, "value": 1},
+{"source": 11001746, "target": 10000091, "value": 1}
+]}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<title>REGACT | Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v0.min.js"></script>
+<script type="text/javascript">
+
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+</script>
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+    .bigbox {border: 0px solid #DDD;  height: 47px; padding: 0; margin: 0}
+  .bigbox input {border: 0;  height: 45px; font-family: "Lucida Sans Typewriter" }
+  #myanimspan {display: none;}
+
+</style>
+
+<body class=" w3-content" style="max-width:1600px">
+
+<div class="w3-top">
+    <div class="w3-bar w3-white">
+    </div>
+</div>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<br>
+
+<div class="w3-main" >
+  <div style="margin-top: 126px; margin-bottom: 120px">
+
+    <center><img src="/reg360/logo-06.jpg" alt="Lights" height="130px" width ="300px"></center></div>
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+  <!-- The Grid -->
+  <div class="w3-row">
+
+    <!-- Left Column -->
+    <div class="w3-third w3-border-right w3-border-grey">
+
+    <a href="/smartkyc/entity_search" style="text-decoration:none;"><div id = "overlay">
+      <div class="w3-white w3-text-grey">
+        <div class="w3-container">
+          <center><H2><img src="/reg360/entity_search_icon.png" height="35px"><br><b>R</b></H2></center>
+          <center>Search for Organizations & HNIs</center>
+
+          <hr>
+
+          <p class="w3-large w3-margin-right">Search entities for red flags along with risk score induced by negative news.</p>
+
+        </div>
+
+      </div></div></a>
+
+	  <br>
+
+    <!-- End Left Column -->
+    </div>
+	    <!-- Left Column -->
+    <div class="w3-third w3-border-right w3-border-gray">
+    <a href="/smartkyc/customize/keywords" style="text-decoration:none;"><div id = "overlay1">
+
+      <div class="w3-white w3-text-grey">
+        <div class="w3-container">
+         <center><H2><img src="/reg360/customize.png" height="35px"><br><b>CA</b></H2></center>
+          <center>Define your own Keywords & Scores</center>
+
+          <hr>
+
+          <p class="w3-large w3-margin-right">Integrate your own keywords, scores and sources to use a unique risk scoring technique.</p>
+
+        </div>
+
+      </div><br>
+
+    <!-- End Left Column -->
+    </div></a></div>
+
+	    <!-- Left Column -->
+    <div class="w3-third">
+    <a href="/smartkyc/research/ner" style="text-decoration:none;"><div id = "overlay3">
+
+      <div class="w3-white w3-text-grey">
+        <div class="w3-container">
+          <center><H2><img src="/reg360/research.png" height="35px"><br><b>T</b></H2></center>
+          <center>Search years of data to enhance</center>
+
+          <hr>
+
+          <p class="w3-large w3-margin-right">Research from years & years of news available to build or integrate a scanner, keywords & scoring.</p>
+
+
+        </div>
+
+
+      </div><br>
+
+    <!-- End Left Column -->
+    </div></a></div>
+
+
+
+
+  <!-- End Grid -->
+  </div>
+
+  <!-- End Page Container -->
+</div>
+
+
+</div>
+<div class="w3-center" style="font-weight:bold">
+    <a href="/reg360/holisticTable" class="w3-bar-item w3-button   w3-padding-small w3-hide-small">FS</a>
+    <div class="w3-dropdown-hover w3-padding-small w3-hide-small">|</div>
+    <a href="#" class="w3-bar-item w3-button   w3-padding-small w3-hide-small">S.M</a>
+    <div class="w3-dropdown-hover w3-padding-small w3-hide-small">|</div>
+    <a href="#" class="w3-bar-item w3-button   w3-padding-small w3-hide-small">IRS</a>
+    <div class="w3-dropdown-hover w3-padding-small w3-hide-small">|</div>
+    <a href="#" class="w3-bar-item w3-button   w3-padding-small w3-hide-small">GST</a>
+    <div class="w3-dropdown-hover w3-padding-small w3-hide-small"></div>
+</div>
+
+<footer class="w3-container w3-dark-grey w3-margin-top w3-bottom">
+  <div class ="w3-left"><img src="/reg360/accenture_white_sig.png" height="35px"></div>
+    <div class="w3-right">Copyright 2001-2018 Accenture. All right reserved. Accenture Confidential. For internal use only.</div>
+    <br><br>
+</footer>
+
+
+</body>
+
+</html>

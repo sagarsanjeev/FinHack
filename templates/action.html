@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Link Analysis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'>
+
+<script type="text/javascript">
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+div.tooltip {
+    position: absolute;
+    background-color: white;
+    max-width; 200px;
+    height: auto;
+    padding: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    border-width: 1px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
+    pointer-events: none;
+  }
+html,body{
+  height:100vh;
+  width:100vw;
+  margin: 0;
+  padding: 0;
+}
+</style>
+</head>
+<body>
+	<select class="check">
+	<option value="test">Test Data</option>
+	<option value="betweenness_centrality">Betweenness Centrality</option>
+	<option value="centrality">Centrality</option>
+	<option value="cycles">Cycles</option>
+	<option value="result">Result</option>
+	</select>
+	<input id="targetNode" name="targetNode" type="text" />
+    <button onclick="growNode()">Search Node</button>
+	<br/><br/><br/><br/>
+<div class="container">
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1">API Data</a>
+        </h4>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="panel-body" id="APIdataContainer">Body</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div  style="overflow-x: auto;overflow-y: auto;white-space: nowrap;">
+	<svg id="mysvg" width="10960" height="10600"></svg>
+</div>
+</body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+<script>
+
+var graphDataGlobal;
+function select(text) {
+	console.log('called');
+	$.getJSON($SCRIPT_ROOT + '/getPanamaData',
+    {
+		request_type: 'getData',
+		filter_text: text
+    },
+    function(data) {		
+		if(data.result.data){
+			console.log(data.result.data);
+			graphDataGlobal = data.result.data;
+			make_graph(graphDataGlobal, '');	
+		}
+    });
+}
+function select2() {
+	console.log('API data called');
+	$.getJSON($SCRIPT_ROOT + '/getAPIData',
+    {
+		request_type: 'getData'
+    },
+    function(data) {		
+		if(data.result.data){
+			console.log(data.result.data);
+			$('#APIdataContainer').empty();	
+			var nameList = '<UL>';
+			data.result.data.forEach(function(d){
+				nameList += '<LI>'+d+'</LI>'
+			});
+			nameList += '</UL>';
+			$('#APIdataContainer').html(nameList);	
+		}
+    });
+}
+ $(document).ready(function(){
+	$('.collapse').collapse();
+	select2();
+    select('test');
+	
+	$('.check').change(function(){
+	  var data= $(this).val();
+	  console.log(data);
+	  select(data);	  
+	});
+});
+
+function growNode(){
+	var userInput = document.getElementById("targetNode").value;
+	make_graph(graphDataGlobal, userInput);
+}
+function make_graph(graph, userInput){
+var radius = 10;
+$('#mysvg').empty();
+var nodeNameGlobal;
+var tooltip = d3.select("body")
+	.append("div")
+	.attr("class", "tooltip")
+	.style("opacity", 0);
+	
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var color = d3.scaleOrdinal(d3.schemeDark2);
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
+	
+var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
+    .enter().append("line")
+      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+var enterNode = svg.selectAll("circle")
+			.data(graph.nodes)
+			.enter().append("circle")
+			.attr("id", function(d, i){
+              //nodes[i].id = "c" + i;
+              return "c" + d.id;});
+			  
+  var node = svg.selectAll("circle")
+      .attr("class", "nodes")
+      .attr("r", function(d){
+		return d.group===1 ? 5 : 5;
+	  })
+      .attr("fill", function(d) { 
+		return d.group===1 ? 'blue' : 'red'; 
+	  })
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended))
+	.on('mouseover.tooltip', function(d) {
+		getNodeDetails(d.id);
+		//setTimeout(console.log('4 sec'),8000);
+      	tooltip.transition()
+        	.duration(600)
+        	.style("opacity", .8);
+      	tooltip.html("Id:" + d.id + "<p/>group:" + d.group + "<p/>" + nodeNameGlobal)
+        	.style("left", (d3.event.pageX) + "px")
+        	.style("top", (d3.event.pageY + 10) + "px");
+    	})
+	.on("mouseout.tooltip", function() {
+        tooltip.transition()
+	        .duration(100)
+	        .style("opacity", 0);
+	    })
+	.on("click", function(d) {
+		console.log(d.id);
+		var theNode = d3.select("#c"+d.id);
+        theNode.attr("r", function(d){
+			return d.group===1 ? 5 : 10;
+		});
+		theNode.attr("fill", function(d) { 
+			return d.group===1 ? 'blue' : 'red'; 
+		});
+    });
+
+ // node.append("title")
+    //  .text(function(d) { return d.id; });
+	if(userInput != ''){
+        var theNode = d3.select("#c"+userInput);
+        theNode.attr("r", 20);
+		theNode.attr("fill", 'lime');
+    }
+
+	
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph.links);
+	  
+  function getNodeDetails(nodeId){
+	$.getJSON($SCRIPT_ROOT + '/getNodeDetails',
+    {
+		request_type: 'getNodeData',
+		filter_text: nodeId
+    },
+    function(data) {
+		console.log(data);
+		if(data.result.data){
+			//console.log(data.result.data);
+			//$('.modal-body').html(data.result.data);	
+			//$('#myModal').modal('show');
+			nodeNameGlobal = data.result.data;
+		}
+    });
+  
+  }
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("cx", function(d) { return d.x})
+        .attr("cy", function(d) { return d.y});
+		//.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+        //.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+  }
+
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+}
+</script>
+
+</body>
+</html>

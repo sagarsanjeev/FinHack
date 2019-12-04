@@ -1,0 +1,26 @@
+<html lang="en">
+  <head>
+    {% include 'partials/head.html' %}
+  </head>
+  <body class="container-fluid">
+    <header>
+      {% include 'partials/header.html' %}
+    </header>
+    <main class="main">
+    <div class="row">
+      {% for result in results %}
+      <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+            <h5 class="card-title">{{ result.name }}</h5>
+            </div>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+    </main>result
+    <footer>
+      {% include 'partials/footer.html' %}
+    </footer>
+  </body>
+</html>
